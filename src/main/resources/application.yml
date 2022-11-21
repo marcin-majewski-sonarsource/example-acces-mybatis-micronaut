@@ -1,0 +1,11 @@
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/<db>
+    username: <username>
+    password: <password>
+    dialect: POSTGRESQL
+    driverClassName: org.postgresql.Driver
+
+micronaut:
+  application:
+    name: "test"
