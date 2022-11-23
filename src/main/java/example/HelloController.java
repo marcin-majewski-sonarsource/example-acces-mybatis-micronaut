@@ -23,6 +23,15 @@ import io.micronaut.validation.Validated;
 import jakarta.inject.Inject;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import software.amazon.cloudwatchlogs.emf.config.Configuration;
+import software.amazon.cloudwatchlogs.emf.environment.DefaultEnvironment;
+import software.amazon.cloudwatchlogs.emf.environment.Environment;
+import software.amazon.cloudwatchlogs.emf.exception.DimensionSetExceededException;
+import software.amazon.cloudwatchlogs.emf.exception.InvalidDimensionException;
+import software.amazon.cloudwatchlogs.emf.exception.InvalidMetricException;
+import software.amazon.cloudwatchlogs.emf.logger.MetricsLogger;
+import software.amazon.cloudwatchlogs.emf.model.DimensionSet;
+import software.amazon.cloudwatchlogs.emf.model.Unit;
 
 /**
  * @author Graeme Rocher
@@ -35,8 +44,27 @@ public class HelloController {
   @Inject
   TestMapper projectMapper;
 
-  @Get(uri = "/hello/{name}", produces = MediaType.TEXT_PLAIN)
+  @Get(uri = "/hello/{name}", produces = MediaType.APPLICATION_JSON)
   public List<TestDto> hello(@NotBlank String name) {
+
+
+    Configuration config = new Configuration();
+    config.setServiceName("TestServiceName");
+    config.setServiceType("Dev");
+    Environment environemtn = new DefaultEnvironment(config);
+    MetricsLogger metrics = new MetricsLogger(environemtn);
+
+    try {
+      metrics.putDimensions(DimensionSet.of( "Service", "Aggregator"));
+      metrics.putMetric("ProcessingLatency", 100, Unit.MILLISECONDS);
+      metrics.putMetric("ProcessingDuration", 200, Unit.COUNT);
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
+    metrics.putProperty("RequestId", "422b1569-16f6-4a03-b8f0-fe3fd9b100f8");
+    metrics.flush();
+
     return projectMapper.selectAll();
   }
 }

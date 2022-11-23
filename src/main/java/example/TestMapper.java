@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Select;
 @Singleton
 public interface TestMapper {
 
-  @Select("select id, kee from projects")
+  @Select("select id, kee from projects limit 10")
   List<TestDto> selectAll();
 }

@@ -20,9 +20,9 @@ public class FactoryDef {
   public DataSource dataSource() {
     HikariConfig hikariConfig = new HikariConfig();
     hikariConfig.setDriverClassName("org.postgresql.Driver");
-    hikariConfig.setUsername("<username>");
-    hikariConfig.setPassword("<password>");
-    hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/<db>");
+    hikariConfig.setUsername("sonar");
+    hikariConfig.setPassword("sonar");
+    hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/sonar");
     return new HikariDataSource(hikariConfig);
   }
 
